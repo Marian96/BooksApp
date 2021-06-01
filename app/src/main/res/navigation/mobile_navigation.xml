@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.marianpusk.knihy.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_editBookFragment"
+            app:destination="@id/editBookFragment"
+            app:launchSingleTop="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_book"
+        android:name="com.marianpusk.knihy.ui.book.BookFragment"
+        android:label="@string/title_book"
+        tools:layout="@layout/fragment_book">
+        <action
+            android:id="@+id/action_navigation_book_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_category"
+        android:name="com.marianpusk.knihy.ui.categories.CategoryFragment"
+        android:label="@string/title_category"
+        tools:layout="@layout/fragment_category" />
+    <fragment
+        android:id="@+id/editBookFragment"
+        android:name="com.marianpusk.knihy.ui.book.EditBookFragment"
+        android:label="EditBookFragment" >
+        <argument
+            android:name="bookId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_editBookFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
+</navigation>
