@@ -9,8 +9,9 @@ import com.marianpusk.carapplicaiton.database.daos.BooksDao
 import com.marianpusk.knihy.database.Converters
 import com.marianpusk.knihy.database.entities.BookEntity
 import com.marianpusk.knihy.database.entities.Category
+import com.marianpusk.knihy.database.entities.ImageEntity
 
-@Database(entities = [BookEntity::class,Category::class],version = 4,exportSchema = true)
+@Database(entities = [BookEntity::class,Category::class,ImageEntity::class],version = 6,exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class bookDatabase: RoomDatabase(){
 

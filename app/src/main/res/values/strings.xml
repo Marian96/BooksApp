@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Moje Knihy</string>
-    <string name="title_home">Home</string>
-    <string name="title_category">Kategoria</string>
+    <string name="title_home">Knihy</string>
+    <string name="title_category">Kategória</string>
     <string name="title_book">Kniha</string>
     <string name="book_name">Názov knihy</string>
     <string name="author">Autor</string>
@@ -21,4 +21,16 @@
     <string name="authorText">Autor:</string>
     <string name="yearText">Rok vydania:</string>
     <string name="book_stateText">Stav:</string>
+    <string name="photo">odfotiť</string>
+    <string name="choose_photo">Vybrať obrázok</string>
+    <string name="cancel_btn">Zavrieť</string>
+    <string name="confirm">OK</string>
+    <string name="open">Otvoriť</string>
+    <string name="delete">Vymazať?</string>
+    <string name="yes">Áno</string>
+    <string name="no">Nie</string>
+    <string name="capture_photo">Fotografia</string>
+    <string name="choose_picture">Vybrať obrázok</string>
+
+
 </resources>

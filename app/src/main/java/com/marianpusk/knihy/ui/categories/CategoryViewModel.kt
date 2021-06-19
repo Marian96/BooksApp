@@ -26,6 +26,12 @@ class CategoryViewModel(
         }
     }
 
+    private suspend fun deleteCategory(id: Int){
+        withContext(Dispatchers.IO){
+            database.deleteCategoryById(id)
+        }
+    }
+
     private suspend fun update(category: Category){
         withContext(Dispatchers.IO){
             database.updateCategory(category)
@@ -36,6 +42,12 @@ class CategoryViewModel(
         uiScope.launch {
             insert(category)
             update(category)
+        }
+    }
+
+    fun deleteCatById(id:Int){
+        uiScope.launch {
+            deleteCategory(id)
         }
     }
 

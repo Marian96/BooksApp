@@ -10,6 +10,7 @@ import com.marianpusk.carapplicaiton.database.daos.BooksDao
 import com.marianpusk.knihy.R
 import com.marianpusk.knihy.database.entities.BookEntity
 import com.marianpusk.knihy.database.entities.Category
+import com.marianpusk.knihy.database.entities.ImageEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +28,33 @@ fun ImageView.setImage(item: BookEntity?){
     }
 }
 
+@BindingAdapter("bookImage")
+fun ImageView.setImage(item: ImageEntity?){
+    item?.let {
+        it.image?.let {
+            setImageBitmap(item.image)
+        }
+    }
+}
+
 @BindingAdapter("bookName")
 fun TextView.setFileName(item: BookEntity?) {
     item?.let {
-        text = item.title
+        var bookName = item.title
+        if(bookName.length > 25) {
+            var stringLIst = bookName.chunked(25)
+            bookName = ""
+            for (item in stringLIst){
+                if (item != stringLIst.last()){
+                    bookName += item + "\n"
+                }
+                else{
+                    bookName += item
+                }
+
+            }
+        }
+        text = bookName
     }
 }
 
@@ -72,7 +96,7 @@ fun TextView.setAuthor(item: BookEntity?){
 @BindingAdapter("category")
 fun TextView.setCategory(cat: Category?){
     cat?.let {
-        text = cat.name
+        text = it.name
     }
 }
 

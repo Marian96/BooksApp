@@ -13,7 +13,8 @@
         <action
             android:id="@+id/action_navigation_home_to_editBookFragment"
             app:destination="@id/editBookFragment"
-            app:launchSingleTop="true" />
+            app:launchSingleTop="false"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -41,5 +42,26 @@
         <action
             android:id="@+id/action_editBookFragment_to_navigation_home"
             app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_editBookFragment_to_bookImageFragment"
+            app:destination="@id/bookImageFragment"
+            app:launchSingleTop="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/bookImageFragment"
+        android:name="com.marianpusk.knihy.ui.book.BookImageFragment"
+        tools:layout="@layout/fragment_book_image">
+        <argument
+            android:name="imageId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_bookImageFragment_to_editBookFragment"
+            app:destination="@id/editBookFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/editBookFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="bookId"
+            app:argType="integer" />
     </fragment>
 </navigation>

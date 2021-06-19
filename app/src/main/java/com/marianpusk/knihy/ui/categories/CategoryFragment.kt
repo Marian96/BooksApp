@@ -1,27 +1,34 @@
 package com.marianpusk.knihy.ui.categories
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.afollestad.materialdialogs.MaterialDialog
 import com.marianpusk.carapplicaiton.database.bookDatabase
 import com.marianpusk.knihy.R
 import com.marianpusk.knihy.database.entities.Category
 import com.marianpusk.knihy.databinding.FragmentCategoryBinding
+import com.marianpusk.knihy.hideKeyboard
 import com.marianpusk.knihy.ui.home.HomeViewModelFactory
 import kotlinx.android.synthetic.main.fragment_category.*
 
 class CategoryFragment : Fragment() {
 
     private lateinit var categoryViewModel: CategoryViewModel
+    lateinit var categoryRecycleAdapter: CategoryRecycleAdapter
     var categoryName = ""
 
     override fun onCreateView(
@@ -37,6 +44,10 @@ class CategoryFragment : Fragment() {
         val viewModelFactory = CategoryViewModelFactory(datasource,application)
         categoryViewModel =
             ViewModelProviders.of(this,viewModelFactory).get(CategoryViewModel::class.java)
+        binding.setLifecycleOwner(this)
+
+
+
 
         binding.categoryName.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
@@ -57,21 +68,37 @@ class CategoryFragment : Fragment() {
                 val newCategory = Category()
                 newCategory.name = categoryName
                 categoryViewModel.insertCategory(newCategory)
-                Toast.makeText(application,getString(R.string.add_category),Toast.LENGTH_SHORT).show()
                 binding.categoryName.text.clear()
+                hideKeyboard()
+                Toast.makeText(application,getString(R.string.add_category),Toast.LENGTH_SHORT).show()
             }
         }
 
-        val recyclerAdapter = CategoryRecycleAdapter()
+        categoryRecycleAdapter = CategoryRecycleAdapter(CategoryListener {
+            id ->
+             run {
+                 MaterialDialog(requireActivity()).show {
+                     message(R.string.delete)
+                     positiveButton(R.string.yes) { dialog ->
+                         categoryViewModel.deleteCatById(id)
+                         dismiss()
+                     }
+                     negativeButton(R.string.no) { dialog ->
+                         dismiss()
+                     }
+                 }
+             }})
+        binding.recyclerAdapter.adapter = categoryRecycleAdapter
 
         categoryViewModel.categories.observe(viewLifecycleOwner, Observer {
             it?.let {
-                //Toast.makeText(application,it.toString(),Toast.LENGTH_SHORT).show()
-                recyclerAdapter.submitList(it)
+                Log.v("kategorie",it.toString())
+                categoryRecycleAdapter.submitList(it)
+             //   binding.recyclerAdapter.adapter = categoryRecycleAdapter
             }
         })
 
-        binding.recyclerAdapter.adapter = recyclerAdapter
+
 
 
         return binding.root

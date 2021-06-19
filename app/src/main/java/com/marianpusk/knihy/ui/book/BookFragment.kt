@@ -136,6 +136,7 @@ class BookFragment : Fragment() {
                     categoriesArray[index] = category.name
                 }
 
+
                 val categoryAdapter = ArrayAdapter(
                     application.applicationContext, android.R.layout.simple_spinner_item,
                     categoriesArray

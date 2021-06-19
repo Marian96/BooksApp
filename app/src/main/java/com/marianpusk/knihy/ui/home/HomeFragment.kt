@@ -1,24 +1,31 @@
 package com.marianpusk.knihy.ui.home
 
+import android.annotation.SuppressLint
 import android.graphics.Canvas
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
 import com.marianpusk.carapplicaiton.database.bookDatabase
 import com.marianpusk.knihy.R
 import com.marianpusk.knihy.databinding.FragmentHomeBinding
-import com.marianpusk.knihy.ui.book.EditBookFragment
+import com.marianpusk.knihy.ui.book.BlankFragment
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
+
+private const val ARG_PARAM1 = "param1"
+private const val ARG_PARAM2 = "param2"
 
 class HomeFragment() : Fragment() {
 
@@ -26,37 +33,61 @@ class HomeFragment() : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
 
+    private var param1: String? = null
+    private var param2: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        arguments?.let {
+            param1 = it.getString(ARG_PARAM1)
+            param2 = it.getString(ARG_PARAM2)
+        }
+        super.onCreate(savedInstanceState)
+
+    }
+
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
 
-        val binding = DataBindingUtil.inflate<FragmentHomeBinding>(inflater, R.layout.fragment_home, container, false)
+        val binding = DataBindingUtil.inflate<FragmentHomeBinding>(
+            inflater,
+            R.layout.fragment_home,
+            container,
+            false
+        )
         val application = requireNotNull(this.activity).application
         val datasource = bookDatabase.getInstance(application).books
-        val viewModelFactory = HomeViewModelFactory(datasource,application)
-        Toast.makeText(application,"View created",Toast.LENGTH_SHORT).show()
+        val viewModelFactory = HomeViewModelFactory(datasource, application)
         homeViewModel =
-                ViewModelProviders.of(this,viewModelFactory).get(HomeViewModel::class.java)
+                ViewModelProviders.of(requireActivity(), viewModelFactory).get(HomeViewModel::class.java)
         binding.setLifecycleOwner(this)
 
-        booksAdapter = RecycleAdapter(BookListener {
-            id -> this@HomeFragment.findNavController().navigate(HomeFragmentDirections.actionNavigationHomeToEditBookFragment(id))
+        booksAdapter = RecycleAdapter(BookListener { id ->
+            this@HomeFragment.findNavController().navigate(
+                HomeFragmentDirections.actionNavigationHomeToEditBookFragment(
+                    id
+                )
+            )
         })
 
 
         homeViewModel.books.observe(viewLifecycleOwner, Observer {
             it?.let {
+
                 booksAdapter.submitList(it)
                 booksAdapter.getBooks(it)
-              //  this.findNavController().navigate(HomeFragmentDirections.actionNavigationHomeToNavigationBook())
+                //  this.findNavController().navigate(HomeFragmentDirections.actionNavigationHomeToNavigationBook())
             }
         })
 
         binding.recyclerView.adapter = booksAdapter
 
-        var simpleCallback = object: ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT){
+        var simpleCallback = object: ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ){
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -65,6 +96,7 @@ class HomeFragment() : Fragment() {
                 TODO("Not yet implemented")
             }
 
+            @SuppressLint("UseRequireInsteadOfGet")
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val bookList = homeViewModel.books.value
@@ -74,8 +106,30 @@ class HomeFragment() : Fragment() {
                     categoryId = -1
                 }
                 when(direction){
-                    ItemTouchHelper.LEFT -> homeViewModel.deleteBookById(bookList!![position])
-                    ItemTouchHelper.RIGHT -> this@HomeFragment.findNavController().navigate(HomeFragmentDirections.actionNavigationHomeToEditBookFragment(bookId))
+                    ItemTouchHelper.LEFT -> {
+                        MaterialDialog(requireActivity()).show {
+                            message(text = "Vymazat?")
+                            positiveButton(text = "Ano") { dialog ->
+                                homeViewModel.deleteBookById(
+                                    bookList!![position]
+                                )
+                                dismiss()
+
+                            }
+                            negativeButton(text = "Nie") { dialog ->
+                                dismiss()
+                                val ft: FragmentTransaction =
+                                    this@HomeFragment.fragmentManager!!.beginTransaction()
+                                ft.detach(this@HomeFragment).attach(this@HomeFragment).commit()
+
+                            }
+                        }
+                    }
+                    ItemTouchHelper.RIGHT -> this@HomeFragment.findNavController().navigate(
+                        HomeFragmentDirections.actionNavigationHomeToEditBookFragment(
+                            bookId
+                        )
+                    )
                 }
             }
 
@@ -100,7 +154,12 @@ class HomeFragment() : Fragment() {
                     isCurrentlyActive
                 )
                     .addSwipeLeftActionIcon(R.drawable.delete_forever_24)
-                    .addSwipeLeftBackgroundColor(ContextCompat.getColor(application,R.color.redColor))
+                    .addSwipeLeftBackgroundColor(
+                        ContextCompat.getColor(
+                            application,
+                            R.color.redColor
+                        )
+                    )
                     .addSwipeRightActionIcon(R.drawable.edit)
                     .addSwipeRightBackgroundColor(R.color.colorPrimary)
                     .create()
@@ -129,11 +188,11 @@ class HomeFragment() : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
-        inflater.inflate(R.menu.home_menu,menu)
+        inflater.inflate(R.menu.home_menu, menu)
         val menuItem = menu.findItem(R.id.app_bar_search)
         val searchView = menuItem.actionView as SearchView
 
-        searchView.setOnQueryTextListener(object :SearchView.OnQueryTextListener{
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 return false
             }
@@ -149,8 +208,27 @@ class HomeFragment() : Fragment() {
     }
 
     override fun onDestroyView() {
-        Toast.makeText(requireActivity(),"view destroyed",Toast.LENGTH_SHORT).show()
         super.onDestroyView()
+    }
+
+    companion object {
+        /**
+         * Use this factory method to create a new instance of
+         * this fragment using the provided parameters.
+         *
+         * @param param1 Parameter 1.
+         * @param param2 Parameter 2.
+         * @return A new instance of fragment BlankFragment.
+         */
+        // TODO: Rename and change types and number of parameters
+        @JvmStatic
+        fun newInstance(param1: String, param2: String) =
+            BlankFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ARG_PARAM1, param1)
+                    putString(ARG_PARAM2, param2)
+                }
+            }
     }
 
 

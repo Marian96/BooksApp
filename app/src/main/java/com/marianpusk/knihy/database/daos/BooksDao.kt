@@ -7,11 +7,18 @@ import androidx.room.Query
 import androidx.room.Update
 import com.marianpusk.knihy.database.entities.BookEntity
 import com.marianpusk.knihy.database.entities.Category
+import com.marianpusk.knihy.database.entities.ImageEntity
 
 @Dao
 interface BooksDao {
     @Insert
     fun insertBook(book: BookEntity)
+
+    @Insert
+    fun insertImage(image: ImageEntity)
+
+    @Update
+    fun updateImage(image: ImageEntity)
 
     @Update
     fun updateBook(book: BookEntity)
@@ -29,7 +36,7 @@ interface BooksDao {
     @Query("SELECT * FROM BookEntity ORDER BY titleNormalized ASC")
     fun getAllBooks(): LiveData<List<BookEntity>>
 
-    @Query("SELECT * FROM Category")
+    @Query("SELECT * FROM Category ORDER BY name ASC")
     fun getAllCategories(): LiveData<List<Category>>
 
     @Query("SELECT * FROM BookEntity WHERE id = :key")
@@ -47,6 +54,20 @@ interface BooksDao {
     @Query("UPDATE BookEntity SET note = :text WHERE id = :key")
     fun updatenote(text: String, key:Int)
 
+    @Query("UPDATE BookEntity SET note = :text, author = :aut,id_category = :cat,rating = :rat,year = :year  WHERE id = :key")
+    fun updateBookEntity(key:Int,text: String,aut:String,cat:Int,rat:Float,year:Int )
+
+    @Query("SELECT * FROM ImageEntity")
+    fun getAllImages(): LiveData<List<ImageEntity>>
+
+    @Query("SELECT * FROM ImageEntity WHERE id = :key")
+    fun getImageById(key: Int): ImageEntity
+
+    @Query("DELETE FROM ImageEntity WHERE id = :key")
+    fun deleteImageById(key:Int)
+
+    @Query("DELETE FROM Category WHERE id = :key")
+    fun deleteCategoryById(key:Int)
 
 //    @Query("DELETE FROM GeneratedCodeEntity WHERE id = :key")
 //    fun deleteCode(key: Int)
