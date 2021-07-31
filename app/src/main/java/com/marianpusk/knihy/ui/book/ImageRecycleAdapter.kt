@@ -3,6 +3,7 @@ package com.marianpusk.knihy.ui.book
 import android.graphics.Bitmap
 import android.media.Image
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -29,6 +30,8 @@ class ImageRecycleAdapter (val clickListener: BookImageListener) : ListAdapter<I
     override fun onBindViewHolder(holder: CodeViewHolder, position: Int) {
         when(holder) {
             is CodeViewHolder -> {
+
+
 
                 holder.bind(getItem(position),clickListener)
             }
@@ -74,9 +77,9 @@ class TrainingPlandDiffCallback : DiffUtil.ItemCallback<ImageEntity>() {
     }
 }
 
-class BookImageListener(val clickListener: (value: Bitmap?, id: Int) -> Unit){
+class BookImageListener(val clickListener: (value: String?, id: Int) -> Unit){
 
-    fun onClick(image: ImageEntity) = clickListener(image.image, image.id)
+    fun onClick(image: ImageEntity) = clickListener(image.imageURI, image.id)
 }
 
 

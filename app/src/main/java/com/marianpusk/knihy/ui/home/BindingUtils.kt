@@ -1,20 +1,23 @@
 package com.marianpusk.knihy.ui.home
 
 import android.annotation.SuppressLint
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.provider.MediaStore
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.databinding.BindingAdapter
 import com.marianpusk.carapplicaiton.database.bookDatabase
 import com.marianpusk.carapplicaiton.database.daos.BooksDao
+import com.marianpusk.knihy.App
 import com.marianpusk.knihy.R
 import com.marianpusk.knihy.database.entities.BookEntity
 import com.marianpusk.knihy.database.entities.Category
 import com.marianpusk.knihy.database.entities.ImageEntity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.squareup.picasso.Picasso
+import kotlinx.coroutines.*
 import org.w3c.dom.Text
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,8 +34,22 @@ fun ImageView.setImage(item: BookEntity?){
 @BindingAdapter("bookImage")
 fun ImageView.setImage(item: ImageEntity?){
     item?.let {
-        it.image?.let {
-            setImageBitmap(item.image)
+        it.imageURI?.let {
+            val imageUri = Uri.parse(it)
+
+            Picasso.get()
+                .load(imageUri)
+                .resize(150,150)
+                .into(this)
+//            val imageBitmap = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+//                ImageDecoder.decodeBitmap(ImageDecoder.createSource(App.context.contentResolver, imageUri))
+//            } else {
+//                MediaStore.Images.Media.getBitmap(App.context.contentResolver, imageUri)
+//            }
+
+            //           val bitmap =
+//                MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), item!!.imageURI)
+            //setImageBitmap(imageBitmap)
         }
     }
 }
@@ -71,7 +88,10 @@ fun TextView.setCategory(item: BookEntity?){
         CoroutineScope(Dispatchers.IO).launch {
             val database = bookDatabase.getInstance(context)
             val category = database.books.getCategory(item.id)
-            text = category
+            withContext(Dispatchers.Main){
+                text = category
+
+            }
         }
 
     }

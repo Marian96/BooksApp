@@ -22,7 +22,6 @@ class HomeViewModel(
     val books = database.getAllBooks()
     val categories = database.getAllCategories()
 
-    val images = database.getAllImages()
 
     private var _book = MutableLiveData<BookEntity>()
 
@@ -31,6 +30,10 @@ class HomeViewModel(
     private var _bookImage = MutableLiveData<ImageEntity>()
 
     private var _categoryId = MutableLiveData<Int>()
+
+    private var _images = MutableLiveData<List<ImageEntity>>()
+
+    private var _recyclerViewVisible = MutableLiveData<Boolean>()
 
 
     val book: LiveData<BookEntity>
@@ -44,6 +47,12 @@ class HomeViewModel(
 
     val categoryId: LiveData<Int>
     get() = _categoryId
+
+    val images: LiveData<List<ImageEntity>>
+    get() = _images
+
+    val recyclerViewVisible: LiveData<Boolean>
+    get() = _recyclerViewVisible
 
 
 
@@ -77,6 +86,12 @@ class HomeViewModel(
         }
     }
 
+    private suspend fun getImagesByBook(id: Int){
+        withContext(Dispatchers.IO){
+            _images.postValue(database.getImagesByBookId(id))
+        }
+    }
+
 
 
     private suspend fun getCategory(id: Int){
@@ -85,7 +100,7 @@ class HomeViewModel(
         }
     }
 
-    private suspend fun updateBookNow(key:Int,text: String,aut:String,cat:Int,rat:Float,year:Int){
+    private suspend fun updateBookNow(key:Int,text: String,aut:String,cat:Int?,rat:Float,year:Int){
         withContext(Dispatchers.IO){
             database.updateBookEntity(key,text,aut,cat,rat,year)
         }
@@ -134,7 +149,7 @@ class HomeViewModel(
         }
     }
 
-    fun updateBook(key:Int,text: String,aut:String,cat:Int,rat:Float,year:Int){
+    fun updateBook(key:Int,text: String,aut:String,cat:Int?,rat:Float,year:Int){
         uiScope.launch {
             updateBookNow(key,text,aut,cat,rat,year)
         }
@@ -150,6 +165,16 @@ class HomeViewModel(
         uiScope.launch {
             getImageById(id)
         }
+    }
+
+    fun getImages(bookId: Int){
+        uiScope.launch {
+            getImagesByBook(bookId)
+        }
+    }
+
+    fun setVisibility(bool: Boolean){
+        _recyclerViewVisible.postValue(bool)
     }
 
     override fun onCleared() {

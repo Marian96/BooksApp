@@ -11,7 +11,7 @@ import com.marianpusk.knihy.database.entities.BookEntity
 import com.marianpusk.knihy.database.entities.Category
 import com.marianpusk.knihy.database.entities.ImageEntity
 
-@Database(entities = [BookEntity::class,Category::class,ImageEntity::class],version = 6,exportSchema = true)
+@Database(entities = [BookEntity::class,Category::class,ImageEntity::class],version = 7,exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class bookDatabase: RoomDatabase(){
 

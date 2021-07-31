@@ -20,7 +20,6 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.marianpusk.carapplicaiton.database.bookDatabase
 import com.marianpusk.knihy.R
 import com.marianpusk.knihy.databinding.FragmentHomeBinding
-import com.marianpusk.knihy.ui.book.BlankFragment
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 
@@ -64,13 +63,15 @@ class HomeFragment() : Fragment() {
                 ViewModelProviders.of(requireActivity(), viewModelFactory).get(HomeViewModel::class.java)
         binding.setLifecycleOwner(this)
 
-        booksAdapter = RecycleAdapter(BookListener { id ->
+        booksAdapter = RecycleAdapter(BookListener { id,name ->
             this@HomeFragment.findNavController().navigate(
                 HomeFragmentDirections.actionNavigationHomeToEditBookFragment(
-                    id
+                    id,name
                 )
             )
         })
+
+
 
 
         homeViewModel.books.observe(viewLifecycleOwner, Observer {
@@ -102,6 +103,7 @@ class HomeFragment() : Fragment() {
                 val bookList = homeViewModel.books.value
                 val bookId = bookList!![position].id
                 var categoryId = bookList[position].id_category
+                val bookName = bookList[position].title
                 if (categoryId == null){
                     categoryId = -1
                 }
@@ -127,7 +129,7 @@ class HomeFragment() : Fragment() {
                     }
                     ItemTouchHelper.RIGHT -> this@HomeFragment.findNavController().navigate(
                         HomeFragmentDirections.actionNavigationHomeToEditBookFragment(
-                            bookId
+                            bookId,bookName
                         )
                     )
                 }
@@ -199,6 +201,18 @@ class HomeFragment() : Fragment() {
 
             override fun onQueryTextChange(p0: String?): Boolean {
                 booksAdapter.myFilter.filter(p0)
+                booksAdapter.notifyDataSetChanged()
+
+                return false
+            }
+
+        })
+
+        searchView.setOnCloseListener(object : SearchView.OnCloseListener{
+            override fun onClose(): Boolean {
+                val books = homeViewModel.books.value
+                booksAdapter.submitList(books)
+                booksAdapter.notifyDataSetChanged()
                 return false
             }
 
@@ -211,25 +225,25 @@ class HomeFragment() : Fragment() {
         super.onDestroyView()
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment BlankFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            BlankFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
+//    companion object {
+//        /**
+//         * Use this factory method to create a new instance of
+//         * this fragment using the provided parameters.
+//         *
+//         * @param param1 Parameter 1.
+//         * @param param2 Parameter 2.
+//         * @return A new instance of fragment BlankFragment.
+//         */
+//        // TODO: Rename and change types and number of parameters
+//        @JvmStatic
+//        fun newInstance(param1: String, param2: String) =
+//            BlankFragment().apply {
+//                arguments = Bundle().apply {
+//                    putString(ARG_PARAM1, param1)
+//                    putString(ARG_PARAM2, param2)
+//                }
+//            }
+//    }
 
 
 }

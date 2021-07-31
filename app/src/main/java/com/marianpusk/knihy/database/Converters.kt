@@ -2,6 +2,7 @@ package com.marianpusk.knihy.database
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import androidx.room.TypeConverter
 import java.io.ByteArrayOutputStream
 
@@ -24,4 +25,15 @@ class Converters {
 
 
     }
+
+//    @TypeConverter
+//    fun fromURI(uri:Uri): String{
+//
+//        return uri.toString()
+//    }
+//
+//    @TypeConverter
+//    fun fromString(path: String): Uri{
+//        return Uri.parse(path)
+//    }
 }

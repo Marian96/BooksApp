@@ -1,6 +1,9 @@
 package com.marianpusk.knihy.ui.book
 
+import android.graphics.ImageDecoder
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.activity.OnBackPressedCallback
@@ -11,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.afollestad.materialdialogs.MaterialDialog
 import com.marianpusk.carapplicaiton.database.bookDatabase
+import com.marianpusk.knihy.App
 import com.marianpusk.knihy.R
 import com.marianpusk.knihy.databinding.FragmentBookImageBinding
 import com.marianpusk.knihy.databinding.FragmentEditBookBinding
@@ -29,8 +33,9 @@ import kotlinx.android.synthetic.main.book_image.*
 class BookImageFragment : Fragment() {
 
     private lateinit var homeViewModel: HomeViewModel
-    var imageId = 0
-    var bookId = 0
+    private var imageId = 0
+    private var bookId = 0
+    private var bookName = ""
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -51,11 +56,18 @@ class BookImageFragment : Fragment() {
         val arguments = BookImageFragmentArgs.fromBundle(requireArguments())
         imageId = arguments.imageId
         bookId = arguments.bookId
+        bookName = arguments.bookName
+
         homeViewModel.getImage(imageId)
 
         homeViewModel.bookImage.observe(viewLifecycleOwner, Observer {
             it?.let{
-                binding.bookImage.setImageBitmap(it.image)
+                if (!it.imageURI.isNullOrEmpty()){
+                    val imageUri = Uri.parse(it.imageURI)
+                    binding.bookImage.setImageURI(imageUri)
+                }
+
+
             }
         })
 
@@ -78,7 +90,7 @@ class BookImageFragment : Fragment() {
                 positiveButton(R.string.yes) { dialog ->
                     homeViewModel.deleteImageById(imageId)
                     dismiss()
-                    this@BookImageFragment.findNavController().navigate(BookImageFragmentDirections.actionBookImageFragmentToEditBookFragment(bookId))
+                    this@BookImageFragment.findNavController().navigate(BookImageFragmentDirections.actionBookImageFragmentToEditBookFragment(bookId,bookName))
                 }
                 negativeButton(R.string.no) { dialog ->
                     dismiss()

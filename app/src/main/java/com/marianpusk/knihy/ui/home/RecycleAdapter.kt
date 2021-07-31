@@ -29,12 +29,14 @@ class RecycleAdapter(val clickListener: BookListener
     override fun onBindViewHolder(holder: fileViewHolder, position: Int) {
         when(holder) {
             is fileViewHolder -> {
-
                 holder.bind(getItem(position),clickListener)
+
             }
         }
 
     }
+
+
 
 fun getBooks(list: List<BookEntity>){
 
@@ -77,10 +79,11 @@ allBooks.addAll(list)
 
 
 
-            val filteredList= ArrayList<BookEntity>()
+            var filteredList= ArrayList<BookEntity>()
 
             if ( p0.isNullOrEmpty()) {
-                filteredList.addAll(allBooks!!)
+                //filteredList.addAll(allBooks!!)
+                filteredList = allBooks as ArrayList<BookEntity>
             } else {
                 for (book in allBooks!!) {
                     if (book.title.toLowerCase().contains(p0.toString().toLowerCase()) || book.author.toLowerCase().contains(p0.toString().toLowerCase())) {
@@ -97,6 +100,8 @@ allBooks.addAll(list)
 
         override fun publishResults(p0: CharSequence?, p1: FilterResults?) {
             submitList(p1!!.values as List<BookEntity>)
+            notifyDataSetChanged()
+
         }
 
     }
@@ -125,9 +130,9 @@ class FilesDiffUtilCallback(private val oldList: List<BookEntity>, private val n
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) = true
 }
 
-class BookListener(val clickListener: ( id: Int) -> Unit){
+class BookListener(val clickListener: ( id: Int, name:String) -> Unit){
 
-    fun onClick(book: BookEntity) = clickListener( book.id)
+    fun onClick(book: BookEntity) = clickListener( book.id,book.title)
 }
 
 

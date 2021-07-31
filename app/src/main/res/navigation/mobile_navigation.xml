@@ -46,6 +46,9 @@
             android:id="@+id/action_editBookFragment_to_bookImageFragment"
             app:destination="@id/bookImageFragment"
             app:launchSingleTop="false" />
+        <argument
+            android:name="name"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/bookImageFragment"
@@ -63,5 +66,8 @@
         <argument
             android:name="bookId"
             app:argType="integer" />
+        <argument
+            android:name="bookName"
+            app:argType="string" />
     </fragment>
 </navigation>

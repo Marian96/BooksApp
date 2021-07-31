@@ -19,6 +19,6 @@ data class ImageEntity(
     @ColumnInfo
     var id_book: Int? = null,
 
-    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-    var image: Bitmap? = null
+    @ColumnInfo
+    var imageURI: String? = null
 )

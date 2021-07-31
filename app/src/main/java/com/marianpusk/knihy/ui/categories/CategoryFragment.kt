@@ -47,7 +47,7 @@ class CategoryFragment : Fragment() {
         binding.setLifecycleOwner(this)
 
 
-
+        binding.recyclerAdapter.isNestedScrollingEnabled = true
 
         binding.categoryName.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(p0: Editable?) {
@@ -70,7 +70,6 @@ class CategoryFragment : Fragment() {
                 categoryViewModel.insertCategory(newCategory)
                 binding.categoryName.text.clear()
                 hideKeyboard()
-                Toast.makeText(application,getString(R.string.add_category),Toast.LENGTH_SHORT).show()
             }
         }
 

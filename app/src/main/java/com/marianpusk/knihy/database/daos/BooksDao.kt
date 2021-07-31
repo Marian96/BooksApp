@@ -55,7 +55,7 @@ interface BooksDao {
     fun updatenote(text: String, key:Int)
 
     @Query("UPDATE BookEntity SET note = :text, author = :aut,id_category = :cat,rating = :rat,year = :year  WHERE id = :key")
-    fun updateBookEntity(key:Int,text: String,aut:String,cat:Int,rat:Float,year:Int )
+    fun updateBookEntity(key:Int,text: String,aut:String,cat:Int?,rat:Float,year:Int )
 
     @Query("SELECT * FROM ImageEntity")
     fun getAllImages(): LiveData<List<ImageEntity>>
@@ -69,6 +69,8 @@ interface BooksDao {
     @Query("DELETE FROM Category WHERE id = :key")
     fun deleteCategoryById(key:Int)
 
+    @Query("SELECT * FROM ImageEntity WHERE id_book = :key")
+    fun getImagesByBookId(key: Int): List<ImageEntity>
 //    @Query("DELETE FROM GeneratedCodeEntity WHERE id = :key")
 //    fun deleteCode(key: Int)
 }

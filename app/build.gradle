@@ -68,6 +68,9 @@ dependencies {
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
     //material dialogs
     implementation 'com.afollestad.material-dialogs:core:3.3.0'
+    //Picasso lib for images
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
 
 
 }
