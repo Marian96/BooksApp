@@ -435,8 +435,7 @@ class EditBookFragment : Fragment() {
                     this.findNavController().navigate(R.id.action_editBookFragment_to_navigation_home)
 
             }
-            R.id.capture_photo -> dispatchTakePictureIntent()
-            R.id.choose_picture -> checkPermission()
+
         }
 
 

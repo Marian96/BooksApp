@@ -7,12 +7,7 @@
         android:icon="@drawable/save"
         android:title="save"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/capture_photo"
-        android:title="@string/capture_photo" />
-    <item
-        android:id="@+id/choose_picture"
-        android:title="@string/choose_picture" />
+
 
 
 </menu>
