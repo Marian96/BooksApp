@@ -97,7 +97,6 @@ class BookImageFragment : Fragment() {
                 }
             }
 
-            //requireActivity().supportFragmentManager.popBackStack();
 
         }
         return super.onOptionsItemSelected(item)

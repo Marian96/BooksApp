@@ -5,7 +5,7 @@ import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.SearchView
+import androidx.appcompat.widget.SearchView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -192,9 +192,10 @@ class HomeFragment() : Fragment() {
 
         inflater.inflate(R.menu.home_menu, menu)
         val menuItem = menu.findItem(R.id.app_bar_search)
-        val searchView = menuItem.actionView as SearchView
+        val searchView = menuItem.actionView as androidx.appcompat.widget.SearchView
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 return false
             }

@@ -41,15 +41,7 @@ fun ImageView.setImage(item: ImageEntity?){
                 .load(imageUri)
                 .resize(150,150)
                 .into(this)
-//            val imageBitmap = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-//                ImageDecoder.decodeBitmap(ImageDecoder.createSource(App.context.contentResolver, imageUri))
-//            } else {
-//                MediaStore.Images.Media.getBitmap(App.context.contentResolver, imageUri)
-//            }
 
-            //           val bitmap =
-//                MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), item!!.imageURI)
-            //setImageBitmap(imageBitmap)
         }
     }
 }

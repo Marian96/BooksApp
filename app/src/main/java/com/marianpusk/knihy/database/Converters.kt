@@ -26,14 +26,4 @@ class Converters {
 
     }
 
-//    @TypeConverter
-//    fun fromURI(uri:Uri): String{
-//
-//        return uri.toString()
-//    }
-//
-//    @TypeConverter
-//    fun fromString(path: String): Uri{
-//        return Uri.parse(path)
-//    }
 }

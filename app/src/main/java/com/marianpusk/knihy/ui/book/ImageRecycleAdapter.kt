@@ -1,65 +1,89 @@
 package com.marianpusk.knihy.ui.book
 
-import android.graphics.Bitmap
-import android.media.Image
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.marianpusk.knihy.database.entities.ImageEntity
+import com.marianpusk.knihy.databinding.AddPhotoItemBinding
 import com.marianpusk.knihy.databinding.BookImageBinding
 
-class ImageRecycleAdapter (val clickListener: BookImageListener) : ListAdapter<ImageEntity, ImageRecycleAdapter.CodeViewHolder>(TrainingPlandDiffCallback()){
+
+class ImageRecycleAdapter (val imageClickListener: BookImageListener, val plusClickListener: PlusImageListener) : ListAdapter<ImageEntity, ImageRecycleAdapter.CodeViewHolder>(TrainingPlandDiffCallback()){
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CodeViewHolder {
-        return CodeViewHolder.from(parent)
+        return CodeViewHolder.from(parent,viewType)
     }
-
-//    override fun getItemCount(): Int {
-//        return items.size
-//    }
-
-
-//    fun submitList(planList:List<TrainingPlanEntity>) {
-//        items = planList
-//    }
 
     override fun onBindViewHolder(holder: CodeViewHolder, position: Int) {
         when(holder) {
             is CodeViewHolder -> {
 
+                if (position == 0){
+                    holder.bind(null,plusClickListener)
+                }else{
+                    holder.bind(getItem(position - 1),imageClickListener)
 
-
-                holder.bind(getItem(position),clickListener)
+                }
             }
         }
 
     }
 
 
+    override fun getItemCount(): Int {
+        return currentList.count() + 1
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if(position == 0)
+            TYPE_ADD
+        else
+            TYPE_PHOTO
+    }
+
+    companion object {
+        const val TYPE_ADD = 0
+        const val TYPE_PHOTO = 1
+    }
+
+
     class CodeViewHolder(
-        val binding: BookImageBinding
+        var binding: ViewBinding
     ): RecyclerView.ViewHolder(binding.root) {
 
 
         fun bind(
-            item: ImageEntity,
-            clickListener: BookImageListener
+            item: ImageEntity?,
+            clickListener: Any
         ) {
-            binding.clickListener = clickListener
-            binding.image = item
-            binding.executePendingBindings()
+
+
+            if(binding is BookImageBinding && clickListener is BookImageListener) {
+                (binding as BookImageBinding).clickListener = clickListener
+                (binding as BookImageBinding).image = item
+                (binding as BookImageBinding).executePendingBindings()
+            }
+            else if (binding is AddPhotoItemBinding && clickListener is PlusImageListener){
+                (binding as AddPhotoItemBinding).clickListener = clickListener
+            }
 
 
         }
 
         companion object {
-            fun from(parent: ViewGroup): CodeViewHolder {
+            fun from(parent: ViewGroup,viewType: Int): CodeViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = BookImageBinding.inflate(layoutInflater,parent,false)
+                var binding:ViewBinding = if(viewType == TYPE_ADD){
+                    AddPhotoItemBinding.inflate(layoutInflater,parent,false)
+                } else{
+                    BookImageBinding.inflate(layoutInflater,parent,false)
+
+                }
+
                 return CodeViewHolder(binding)
             }
         }
@@ -80,6 +104,10 @@ class TrainingPlandDiffCallback : DiffUtil.ItemCallback<ImageEntity>() {
 class BookImageListener(val clickListener: (value: String?, id: Int) -> Unit){
 
     fun onClick(image: ImageEntity) = clickListener(image.imageURI, image.id)
+}
+
+class PlusImageListener(val clickListener: () -> Unit){
+    fun onClick() = clickListener()
 }
 
 

@@ -5,4 +5,7 @@
     <color name="colorAccent">#03DAC5</color>
     <color name="redColor">#DA2424</color>
     <color name="borderColor">#100F0F</color>
+    <color name="add_photo_bg">#BEC4D3</color>
+    <color name="plus_bg">#FFFFFF</color>
+    <color name="icon_plus">#57DBC9</color>
 </resources>

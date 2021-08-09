@@ -1,13 +1,11 @@
 package com.marianpusk.knihy.ui.book
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
-import android.opengl.Visibility
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -19,22 +17,20 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.RatingBar
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.content.FileProvider
-import androidx.core.view.isGone
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.marianpusk.carapplicaiton.database.bookDatabase
 import com.marianpusk.knihy.App
 import com.marianpusk.knihy.R
-import com.marianpusk.knihy.database.entities.BookEntity
 import com.marianpusk.knihy.database.entities.ImageEntity
 import com.marianpusk.knihy.databinding.FragmentEditBookBinding
 import com.marianpusk.knihy.hideKeyboard
@@ -67,6 +63,7 @@ class EditBookFragment : Fragment() {
 
 
 
+    @SuppressLint("CheckResult")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -93,6 +90,18 @@ class EditBookFragment : Fragment() {
 
         val imageAdapter = ImageRecycleAdapter(BookImageListener{
             image,id -> this.findNavController().navigate(EditBookFragmentDirections.actionEditBookFragmentToBookImageFragment(id,bookId,bookName))
+        }, PlusImageListener {
+            MaterialDialog(requireActivity()).show {
+                message(R.string.new_photo)
+                listItemsSingleChoice(R.array.image_dialog) { dialog, index, text ->
+                    if (index == 0){
+                        dispatchTakePictureIntent()
+                    }
+                    else{
+                        checkPermission()
+                    }
+                }
+            }
         })
 
         val layoutManager = LinearLayoutManager(application,LinearLayoutManager.HORIZONTAL,false)
@@ -109,15 +118,15 @@ class EditBookFragment : Fragment() {
 
         })
 
-        homeViewModel.recyclerViewVisible.observe(viewLifecycleOwner, Observer {
-            if(it){
-                binding.imageRecycleView.visibility = View.VISIBLE
-            }
-            else{
-                binding.imageRecycleView.visibility = View.GONE
-
-            }
-        })
+//        homeViewModel.recyclerViewVisible.observe(viewLifecycleOwner, Observer {
+//            if(it){
+//                binding.imageRecycleView.visibility = View.VISIBLE
+//            }
+//            else{
+//                binding.imageRecycleView.visibility = View.GONE
+//
+//            }
+//        })
 
         binding.imageRecycleView.adapter = imageAdapter
 

@@ -27,7 +27,7 @@
             android:layout_margin="5dp"
             android:gravity="center"
             android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
+            android:foreground="?attr/selectableItemBackground"
             android:onClick="@{() -> clickListener.onClick(book)}"
 
             >

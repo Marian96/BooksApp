@@ -1,6 +1,5 @@
 package com.marianpusk.knihy.ui.book
 
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -21,9 +20,8 @@ import com.marianpusk.knihy.R
 import com.marianpusk.knihy.StringUtils
 import com.marianpusk.knihy.database.entities.BookEntity
 import com.marianpusk.knihy.databinding.FragmentBookBinding
-import com.marianpusk.knihy.ui.home.HomeViewModelFactory
 
-class BookFragment : Fragment() {
+class BookFragment : androidx.fragment.app.Fragment() {
 
     private val REQUEST_CODE = 42
     private val MY_CAMERA_PERMISSION_REQUEST = 111
@@ -150,11 +148,9 @@ class BookFragment : Fragment() {
         binding.categorySpinner.onItemSelectedListener = object : AdapterView.OnItemClickListener,
             AdapterView.OnItemSelectedListener {
             override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                TODO("Not yet implemented")
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                TODO("Not yet implemented")
             }
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
@@ -187,7 +183,7 @@ class BookFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
-        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        if (requestCode == REQUEST_CODE && resultCode == androidx.appcompat.app.AppCompatActivity.RESULT_OK){
             val takenImage = data?.extras?.get("data") as Bitmap
             bookViewModel.getImage(takenImage)
         }
@@ -218,6 +214,7 @@ class BookFragment : Fragment() {
                 this.findNavController().navigate(R.id.action_navigation_book_to_navigation_home)
             }
         }
+
 
 
         return super.onOptionsItemSelected(item)
